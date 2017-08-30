@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<android.support.v7.widget.CardView android:layout_width="match_parent"
+    android:layout_height="60dp"
+    app:cardCornerRadius="0dp"
+    app:cardElevation="1dp"
+    android:id="@+id/card"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:id="@+id/parentView"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:orientation="horizontal"
+        android:weightSum="16">
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="false"
+            android:layout_alignParentStart="false"
+            android:layout_centerInParent="false"
+            android:layout_weight="2.5">
+
+            <FrameLayout
+                android:id="@+id/frameLayout"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_centerInParent="true">
+
+                <!--<com.rey.material.widget.ProgressView-->
+                    <!--android:id="@+id/loading"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--android:visibility="gone"-->
+                    <!--app:pv_autostart="true"-->
+                    <!--app:pv_circular="true"-->
+                    <!--app:pv_progressMode="indeterminate"-->
+                    <!--app:pv_progressStyle="@style/CircularProgressOrange" />-->
+
+
+                <ImageView
+                    android:id="@+id/imageView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:srcCompat="@drawable/mp3" />
+
+            </FrameLayout>
+
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/mainView"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="10.5"
+            android:orientation="vertical">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="false"
+                android:layout_alignParentLeft="false"
+                android:layout_alignParentStart="false"
+                android:layout_centerInParent="true"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/title"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_marginBottom="2dp"
+                    android:layout_weight="1"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="Test Title"
+                    android:textColor="#595052"
+                    android:textSize="14sp" />
+
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+
+                    <TextView
+                        android:id="@+id/size"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="1dp"
+                        android:layout_weight="1"
+                        android:text="2017 KB"
+                        android:textColor="@color/textColor"
+                        android:textSize="13sp" />
+
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/playPause"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:clickable="true"
+            android:padding="0dp"
+            android:visibility="visible">
+
+            <ImageButton
+                android:id="@+id/cancelButton"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="15dp"
+                android:tint="@color/textColor"
+                android:background="@android:color/transparent"
+                android:contentDescription=""
+                android:visibility="visible"
+                app:srcCompat="@drawable/ic_more_vert_black_24dp" />
+
+
+        </RelativeLayout>
+
+
+    </LinearLayout>
+</android.support.v7.widget.CardView>
