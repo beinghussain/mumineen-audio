@@ -1,29 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<android.support.v7.widget.CardView android:layout_width="match_parent"
-    android:layout_height="60dp"
-    app:cardCornerRadius="0dp"
-    app:cardElevation="1dp"
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/card"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_width="match_parent"
+    android:layout_height="76dp"
+    app:cardCornerRadius="0dp"
+    android:layout_marginTop="5dp"
+    android:layout_marginBottom="5dp"
+    android:layout_marginRight="10dp"
+    android:layout_marginLeft="10dp"
+
+    app:cardElevation="1dp">
 
     <LinearLayout
         android:id="@+id/parentView"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:background="?android:attr/selectableItemBackground"
+        android:layout_height="76dp"
         android:clickable="true"
         android:focusable="true"
+        android:background="#0dffffff"
         android:orientation="horizontal"
         android:weightSum="16">
 
         <RelativeLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_alignParentLeft="false"
-            android:layout_alignParentStart="false"
-            android:layout_centerInParent="false"
             android:layout_weight="2.5">
 
             <FrameLayout
@@ -32,22 +34,48 @@
                 android:layout_height="36dp"
                 android:layout_centerInParent="true">
 
-                <!--<com.rey.material.widget.ProgressView-->
-                    <!--android:id="@+id/loading"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="match_parent"-->
-                    <!--android:visibility="gone"-->
-                    <!--app:pv_autostart="true"-->
-                    <!--app:pv_circular="true"-->
-                    <!--app:pv_progressMode="indeterminate"-->
-                    <!--app:pv_progressStyle="@style/CircularProgressOrange" />-->
+
+                <com.rey.material.widget.ProgressView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:id="@+id/seekbarAudio"
+                    android:visibility="visible"
+                    app:pv_autostart="true"
+                    android:alpha="0.7"
+                    app:pv_circular="true"
+                    app:pv_progressMode="indeterminate"
+                    app:pv_progressStyle="@style/CircularProgressWhite" />
 
 
                 <ImageView
                     android:id="@+id/imageView"
+                    android:padding="8dp"
+                    android:visibility="gone"
+                    android:tint="@color/colorWhite"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:srcCompat="@drawable/mp3" />
+                    android:alpha="0.6"
+                    app:srcCompat="@drawable/ic_music_notes"
+                    android:contentDescription="@string/action_settings" />
+
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:id="@+id/animation"
+                    android:visibility="gone"
+                    android:alpha="0.6"
+                    android:layout_height="match_parent">
+
+                    <com.taishi.library.Indicator
+                        android:layout_width="20dp"
+                        android:layout_centerInParent="true"
+                        android:layout_height="15dp"
+                        app:bar_num="5"
+                        app:bar_color="#fff"
+                        app:step_num="10"
+                        app:duration="1500"/>
+
+                </RelativeLayout>
 
             </FrameLayout>
 
@@ -58,7 +86,7 @@
             android:id="@+id/mainView"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="10.5"
+            android:layout_weight="11.46"
             android:orientation="vertical">
 
 
@@ -80,8 +108,9 @@
                     android:ellipsize="end"
                     android:maxLines="1"
                     android:text="Test Title"
-                    android:textColor="#595052"
-                    android:textSize="14sp" />
+                    android:alpha="0.7"
+                    android:textColor="@color/textColor"
+                    android:textSize="15sp" />
 
 
                 <LinearLayout
@@ -96,44 +125,69 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="1dp"
                         android:layout_weight="1"
+                        android:alpha="0.4"
                         android:text="2017 KB"
                         android:textColor="@color/textColor"
-                        android:textSize="13sp" />
+                        android:textSize="11sp" />
 
+
+
+                    <TextView
+                        android:id="@+id/nowPlaying"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="1dp"
+                        android:layout_weight="1"
+                        android:alpha="0.4"
+                        android:text=" • Now Playing"
+                        android:textColor="@color/textColor"
+                        android:textSize="11sp" />
 
                 </LinearLayout>
 
             </LinearLayout>
 
 
+            <!--<RelativeLayout-->
+                <!--android:layout_alignParentBottom="true"-->
+                <!--android:background="#ddd"-->
+                <!--android:alpha="0.3"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="0.3dp"-->
+                <!--android:layout_weight="1" />-->
+
         </RelativeLayout>
 
         <RelativeLayout
-            android:id="@+id/playPause"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="3"
-            android:clickable="true"
-            android:padding="0dp"
-            android:visibility="visible">
+            android:layout_weight="2"
+            android:orientation="vertical">
+
 
             <ImageButton
-                android:id="@+id/cancelButton"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="15dp"
-                android:tint="@color/textColor"
+                android:id="@+id/menu_options"
+                android:layout_width="match_parent"
                 android:background="@android:color/transparent"
-                android:contentDescription=""
-                android:visibility="visible"
-                app:srcCompat="@drawable/ic_more_vert_black_24dp" />
+                android:layout_height="match_parent"
+                android:tint="@color/textColor"
+                android:alpha="0.6"
+                android:layout_centerInParent="true"
+                app:srcCompat="@drawable/ic_more" />
+
+            <!--<RelativeLayout-->
+                <!--android:layout_alignParentBottom="true"-->
+                <!--android:background="#ddd"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:alpha="0.3"-->
+                <!--android:layout_height="0.3dp"-->
+                <!--android:layout_weight="1" />-->
 
 
         </RelativeLayout>
 
 
     </LinearLayout>
+
+
 </android.support.v7.widget.CardView>

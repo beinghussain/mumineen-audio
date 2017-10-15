@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:clickable="true"
+    android:background="#33ffffff"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <RelativeLayout
+        android:layout_width="80dp"
+        android:gravity="center"
+        android:paddingTop="16dp"
+        android:paddingBottom="8dp"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/playPauseBtn"
+            android:layout_width="40dp"
+            android:alpha="0.8"
+            android:layout_height="40dp"
+            android:scaleType="fitCenter"
+            android:layout_gravity="center"
+            app:srcCompat="@drawable/play_main"
+            android:tint="@color/textColor"
+            />
+
+        <com.rey.material.widget.ProgressView
+            android:id="@+id/loading"
+            android:layout_width="10dp"
+            android:alpha="0"
+            android:layout_height="10dp"
+            android:visibility="visible"
+            app:pv_autostart="true"
+            android:layout_gravity="center"
+            app:pv_circular="true"
+            app:pv_progressMode="indeterminate"
+            app:pv_progressStyle="@style/CircularProgressWhite"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:padding="8dp"
+        android:layout_below="@id/itemImage"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/title"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Sample title"
+            android:textColor="@color/textColor"
+            android:textSize="11sp" />
+
+
+
+    </RelativeLayout>
+
+</LinearLayout>
+

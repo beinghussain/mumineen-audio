@@ -25,6 +25,8 @@ public class Audio {
         private int aid;
         private int pdf_id;
         private String cat;
+        private boolean downloaded;
+        private int status;
 
         public String getCat() {
             return cat;
@@ -92,6 +94,22 @@ public class Audio {
 
         public void setPdf_id(int pdf_id) {
             this.pdf_id = pdf_id;
+        }
+
+        public boolean isDownloaded() {
+            return downloaded;
+        }
+
+        public void setDownloaded(boolean downloaded) {
+            this.downloaded = downloaded;
+        }
+
+        public int getStatus() {
+            return status;
+        }
+
+        public void setStatus(int status) {
+            this.status = status;
         }
     }
 }

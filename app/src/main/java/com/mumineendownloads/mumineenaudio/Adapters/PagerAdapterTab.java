@@ -5,13 +5,11 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import com.mumineendownloads.mumineenaudio.Activities.MainActivity;
-import com.mumineendownloads.mumineenaudio.Fragments.HomeFragment;
+import com.mumineendownloads.mumineenaudio.Fragments.AudioListFragment;
 
 import java.util.ArrayList;
 
-/**
- * Created by Hussain on 8/23/2017.
- */
+
 
 public class PagerAdapterTab extends FragmentPagerAdapter {
     private final ArrayList<String> arrayTabList;
@@ -22,10 +20,10 @@ public class PagerAdapterTab extends FragmentPagerAdapter {
     }
 
     @Override
-    public HomeFragment getItem(int position) {
+    public AudioListFragment getItem(int position) {
         Bundle bundle = new Bundle();
         bundle.putInt("position",position);
-        HomeFragment pdfListFragment = new HomeFragment();
+        AudioListFragment pdfListFragment = new AudioListFragment();
         pdfListFragment.setArguments(bundle);
         return pdfListFragment;
     }

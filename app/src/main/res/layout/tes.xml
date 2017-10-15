@@ -1,19 +1,174 @@
-<?xml version="1.0" encoding="utf-8"?>
-
-<RelativeLayout
-    android:layout_width="match_parent"
+<RelativeLayout android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimary"
-    android:orientation="horizontal"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <RelativeLayout
+        android:id="@+id/artContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:padding="40dp">
 
 
-    <TextView
+        <ImageView
+            android:layout_width="250dp"
+            android:layout_height="250dp"
+            android:layout_centerHorizontal="true"
+            app:srcCompat="@drawable/ic_audio_wave" />
+
+
+    </RelativeLayout>
+
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="16dp"
-        android:text="102 We Yeh Milad Mubarak Maula"
-        android:textColor="@android:color/white" />
+        android:layout_below="@id/artContainer"
+        android:padding="16dp">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/titleMain"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#292E40"
+                android:textAllCaps="false"
+                android:textAlignment="center"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:layout_marginTop="6dp"
+                android:text="Ae Allah Na Dai Nabi Na"
+                android:textSize="20sp" />
+
+
+            <TextView
+                android:id="@+id/albumMain"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Madeh"
+                android:textColor="@color/colorPrimary"
+                android:textSize="16sp" />
+
+
+            <SeekBar
+                android:id="@+id/seekBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="3dp"
+                android:layout_marginTop="42dp"
+                android:maxHeight="3dp"
+                android:maxWidth="15dp"
+                android:minHeight="15dp"
+                android:minWidth="12dp"
+                android:progressDrawable="@drawable/custom_seekbar"
+                android:thumb="@drawable/custom_thumb" />
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+
+                <TextView
+                    android:id="@+id/currentPosition"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dip"
+                    android:layout_marginStart="16dip"
+                    android:layout_weight="1"
+                    android:text="00:00" />
+
+                <TextView
+                    android:id="@+id/duration"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="16dip"
+                    android:layout_marginEnd="16dip"
+                    android:layout_weight="1"
+                    android:text="00:00"
+                    android:textAlignment="textEnd" />
+
+
+            </LinearLayout>
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="50dp"
+                android:orientation="horizontal"
+                android:weightSum="9">
+
+                <ImageButton
+                    android:id="@+id/nextMain"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="30dp"
+                    android:layout_toEndOf="@+id/playPauseBtnM"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:clickable="true"
+                    android:cropToPadding="true"
+                    android:tint="@color/colorPrimary"
+                    app:srcCompat="@drawable/ic_next" />
+
+                <ImageButton
+                    android:id="@+id/playlist"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignTop="@+id/prevMain"
+                    android:layout_centerVertical="true"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:tint="@color/colorPrimary"
+                    app:srcCompat="@drawable/ic_playlist" />
+
+                <ImageButton
+                    android:id="@+id/playPauseBtnM"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:background="@android:color/transparent"
+                    android:clickable="true"
+                    android:elevation="9dp"
+                    android:tint="@color/colorPrimary"
+                    app:srcCompat="@drawable/play_main" />
+
+                <ImageButton
+                    android:id="@+id/prevMain"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="30dp"
+                    android:layout_toStartOf="@+id/playPauseBtnM"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:clickable="true"
+                    android:tint="@color/colorPrimary"
+                    app:srcCompat="@drawable/ic_back" />
+
+                <ImageButton
+                    android:id="@+id/repeat"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:clickable="true"
+                    android:tint="@color/colorUnactive"
+                    app:srcCompat="@drawable/ic_repeat" />
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+
+    </RelativeLayout>
 
 
 </RelativeLayout>

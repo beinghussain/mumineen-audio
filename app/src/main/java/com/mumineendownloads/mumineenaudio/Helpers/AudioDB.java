@@ -199,4 +199,31 @@ public class AudioDB extends SQLiteOpenHelper {
         }
         return arrayList;
     }
+
+    public Audio.AudioItem getAudioById(int id) {
+        try {
+            ArrayList<Audio.AudioItem> arrayList = new ArrayList<Audio.AudioItem>();
+            String selectQuery = "SELECT  * FROM " + TABLE_AUDIO + " WHERE id = " + id;
+            SQLiteDatabase db = this.getWritableDatabase();
+            Cursor cursor = db.rawQuery(selectQuery, null);
+
+            if (cursor.moveToFirst()) {
+                do {
+                    Audio.AudioItem audioItem = new Audio.AudioItem();
+                    audioItem.setId(Integer.parseInt(cursor.getString(0)));
+                    audioItem.setTitle(cursor.getString(1));
+                    audioItem.setAlbum(cursor.getString(2));
+                    audioItem.setSource(cursor.getString(3));
+                    audioItem.setSize(Integer.parseInt(cursor.getString(4)));
+                    audioItem.setAid(Integer.parseInt(cursor.getString(5)));
+                    audioItem.setCat(cursor.getString(6));
+                    audioItem.setPdf_id(Integer.parseInt(cursor.getString(7)));
+                    arrayList.add(audioItem);
+                } while (cursor.moveToNext());
+            }
+            return arrayList.get(0);
+        }catch (IndexOutOfBoundsException ignored){
+            return null;
+        }
+    }
 }

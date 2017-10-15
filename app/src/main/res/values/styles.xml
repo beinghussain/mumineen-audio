@@ -7,7 +7,9 @@
         <item name="android:windowActionBarOverlay">true</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="popupMenuStyle">@style/PopupMenu</item>
     </style>
+
 
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
@@ -24,7 +26,43 @@
         <item name="cpd_rotateDuration">2000</item>
         <item name="cpd_strokeColor">@android:color/white</item>
         <item name="cpd_initialAngle">270</item>
+        <item name="cpd_strokeSize">2dp</item>
+    </style>
+
+    <style name="FrontSeekBar">
+        <item name="lpd_strokeSecondaryColor">@color/colorPrimaryDark</item>
+        <item name="lpd_strokeColor">#fff</item>
+        <item name="lpd_strokeSize">2dp</item>
+        <item name="lpd_travelDuration">1000</item>
+        <item name="lpd_inAnimDuration">0</item>
+        <item name="lpd_outAnimDuration">0</item>
+    </style>
+
+
+    <style name="PopupMenu" parent="Base.Widget.AppCompat.PopupMenu">
+        <item name="android:popupBackground">@android:color/white</item>
+    </style>
+
+    <style name="AudioItemSeekbar">
+        <item name="lpd_strokeSecondaryColor">@color/colorPrimary</item>
+        <item name="lpd_strokeColor">@color/colorPrimary</item>
         <item name="cpd_strokeSize">3dp</item>
+        <item name="lpd_travelDuration">1000</item>
+        <item name="lpd_inAnimDuration">0</item>
+        <item name="lpd_outAnimDuration">0</item>
+
+    </style>
+
+    <style name="RightLink" parent="Widget.AppCompat.Button.Small">
+        <item name="android:background">@drawable/button</item>
+        <item name="android:layout_alignParentRight">true</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:layout_height">10dp</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:paddingLeft">2dp</item>
+        <item name="android:paddingRight">2dp</item>
+        <item name="android:textSize">13sp</item>
     </style>
 
 </resources>

@@ -51,14 +51,12 @@ public class CustomDivider extends RecyclerView.ItemDecoration {
         super.getItemOffsets(outRect, view, parent, state);
 
         if(parent.getChildAdapterPosition(view) == state.getItemCount()-1){
-            outRect.bottom = 24;
-            outRect.top = 0;
+            outRect.right = 0;
         }else {
-            outRect.bottom = 1;
+            outRect.right = 15;
         }
         if(parent.getChildAdapterPosition(view) == 0){
-            outRect.top = 24;
-            outRect.bottom = 1;
+            outRect.right = 15;
         }
     }
 }
