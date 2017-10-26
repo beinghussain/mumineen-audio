@@ -1,5 +1,7 @@
 <RelativeLayout android:layout_width="match_parent"
+    android:layout_below="@+id/secondToolbar"
     android:layout_height="match_parent"
+    android:clickable="false"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
@@ -7,13 +9,12 @@
         android:id="@+id/artContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
         android:padding="40dp">
 
 
         <ImageView
-            android:layout_width="250dp"
-            android:layout_height="250dp"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
             android:layout_centerHorizontal="true"
             app:srcCompat="@drawable/ic_audio_wave" />
 
@@ -23,6 +24,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:clickable="false"
         android:layout_below="@id/artContainer"
         android:padding="16dp">
 
@@ -36,7 +38,7 @@
                 android:id="@+id/titleMain"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="#292E40"
+                android:textColor="@color/textColor"
                 android:textAllCaps="false"
                 android:textAlignment="center"
                 android:maxLines="1"
@@ -46,13 +48,42 @@
                 android:textSize="20sp" />
 
 
-            <TextView
-                android:id="@+id/albumMain"
+            <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Madeh"
-                android:textColor="@color/colorPrimary"
-                android:textSize="16sp" />
+                android:layout_height="wrap_content">
+
+
+                <TextView
+                    android:id="@+id/albumMain"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Madeh"
+                    android:alpha="0.7"
+                    android:textColor="@color/textColor"
+                    android:textSize="16sp" />
+
+
+                <TextView
+                    android:id="@+id/dot"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" • "
+                    android:alpha="0.7"
+                    android:textColor="@color/textColor"
+                    android:textSize="16sp" />
+
+
+                <TextView
+                    android:id="@+id/playingOnlineOffline"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Playing Online"
+                    android:alpha="0.7"
+                    android:textColor="@color/textColor"
+                    android:textSize="16sp" />
+
+
+            </LinearLayout>
 
 
             <SeekBar
@@ -79,6 +110,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="16dip"
+                    android:textColor="@color/textColor"
                     android:layout_marginStart="16dip"
                     android:layout_weight="1"
                     android:text="00:00" />
@@ -88,6 +120,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="16dip"
+                    android:textColor="@color/textColor"
                     android:layout_marginEnd="16dip"
                     android:layout_weight="1"
                     android:text="00:00"
@@ -114,19 +147,10 @@
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:clickable="true"
                     android:cropToPadding="true"
-                    android:tint="@color/colorPrimary"
-                    app:srcCompat="@drawable/ic_next" />
+                    android:tint="@color/colorWhite"
+                    app:srcCompat="@drawable/next" />
 
-                <ImageButton
-                    android:id="@+id/playlist"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignTop="@+id/prevMain"
-                    android:layout_centerVertical="true"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:tint="@color/colorPrimary"
-                    app:srcCompat="@drawable/ic_playlist" />
+
 
                 <ImageButton
                     android:id="@+id/playPauseBtnM"
@@ -137,7 +161,7 @@
                     android:background="@android:color/transparent"
                     android:clickable="true"
                     android:elevation="9dp"
-                    android:tint="@color/colorPrimary"
+                    android:tint="@color/colorWhite"
                     app:srcCompat="@drawable/play_main" />
 
                 <ImageButton
@@ -149,8 +173,28 @@
                     android:layout_toStartOf="@+id/playPauseBtnM"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:clickable="true"
-                    android:tint="@color/colorPrimary"
-                    app:srcCompat="@drawable/ic_back" />
+                    android:tint="@color/colorWhite"
+                    app:srcCompat="@drawable/back" />
+
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="9">
+
+                <ImageButton
+                    android:id="@+id/playlist"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:tint="@color/colorWhite"
+                    app:srcCompat="@drawable/play_list" />
+
 
                 <ImageButton
                     android:id="@+id/repeat"
@@ -161,14 +205,14 @@
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:clickable="true"
                     android:tint="@color/colorUnactive"
-                    app:srcCompat="@drawable/ic_repeat" />
+                    app:srcCompat="@drawable/replay" />
 
             </RelativeLayout>
+
 
         </LinearLayout>
 
 
     </RelativeLayout>
-
 
 </RelativeLayout>

@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:clickable="true"
-    android:background="#33ffffff"
+    android:background="@drawable/transparent_background"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <RelativeLayout
@@ -16,11 +16,11 @@
         <ImageView
             android:id="@+id/playPauseBtn"
             android:layout_width="70dp"
-            android:alpha="0.8"
             android:layout_height="70dp"
             android:scaleType="fitCenter"
+            app:elevation="13dp"
             android:layout_gravity="center"
-            app:srcCompat="@drawable/play_main"
+            app:srcCompat="@drawable/play"
             android:tint="@color/textColor"
             />
 

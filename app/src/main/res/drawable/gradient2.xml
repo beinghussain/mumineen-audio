@@ -1,18 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
     <item>
-        <bitmap
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            android:src="@drawable/background"
-            android:gravity="center" />
-    </item>
-    <item>
         <shape xmlns:android="http://schemas.android.com/apk/res/android"
             android:shape="rectangle">
             <gradient
                 android:angle="135"
-                android:endColor="#33FF867B"
-                android:startColor="#33FF54A9"
+                android:endColor="#FF867B"
+                android:startColor="#FF867B"
                 android:type="linear" />
         </shape>
     </item>

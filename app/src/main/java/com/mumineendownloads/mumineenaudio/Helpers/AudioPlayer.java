@@ -1,7 +1,11 @@
 package com.mumineendownloads.mumineenaudio.Helpers;
 
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.graphics.Color;
+import android.support.annotation.RequiresApi;
+import android.support.v7.app.NotificationCompat;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.ComponentName;
@@ -26,37 +30,27 @@ import android.os.IBinder;
 import android.os.PowerManager;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
-import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.media.MediaMetadataCompat;
-import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.MediaSessionCompat;
-import android.support.v7.app.NotificationCompat;
 import android.util.Log;
-
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.mumineendownloads.mumineenaudio.Models.Audio;
 import com.mumineendownloads.mumineenaudio.R;
 import com.thin.downloadmanager.DefaultRetryPolicy;
 import com.thin.downloadmanager.DownloadRequest;
-import com.thin.downloadmanager.DownloadStatusListener;
 import com.thin.downloadmanager.DownloadStatusListenerV1;
 import com.thin.downloadmanager.ThinDownloadManager;
-
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
+import br.com.goncalves.pugnotification.notification.PugNotification;
 import es.dmoral.toasty.Toasty;
 
-import static android.R.attr.description;
+import static android.R.attr.id;
+import static android.R.attr.progress;
 
 
 public class AudioPlayer extends Service implements MediaPlayer.OnPreparedListener, MediaPlayer.OnCompletionListener, MediaPlayer.OnBufferingUpdateListener,
@@ -86,6 +80,13 @@ MediaPlayer.OnErrorListener,MediaPlayer.OnInfoListener,MediaPlayer.OnSeekComplet
     private static final String ACTION_CANCEL_DOWNLOAD = "action_cancel_download";
     private static final String ACTION_PLAY_PAUSE = "play_pause";
 
+    private static final int NOTI_PRIMARY1 = 1100;
+    private static final int NOTI_PRIMARY2 = 1101;
+    private static final int NOTI_SECONDARY1 = 1200;
+    private static final int NOTI_SECONDARY2 = 1201;
+    private static final String ANDROID_CHANNEL_ID = "Downloading";
+    private static final CharSequence ANDROID_CHANNEL_NAME = "Downloading_name";
+
 
     MediaPlayer mPlayer;
     private int resumePosition;
@@ -94,8 +95,7 @@ MediaPlayer.OnErrorListener,MediaPlayer.OnInfoListener,MediaPlayer.OnSeekComplet
     private Audio.AudioItem playingAudio;
     private int buffer = 0;
     private boolean buffering = false;
-    private NotificationCompat.Builder mBuilder;
-    private NotificationManagerCompat mNotificationManager;
+    private Notification.Builder mBuilder;
     private long mLastTime;
     private long startTime;
     AudioDB db;
@@ -105,9 +105,16 @@ MediaPlayer.OnErrorListener,MediaPlayer.OnInfoListener,MediaPlayer.OnSeekComplet
     private DownloadRequest currentRequest;
     private Audio.AudioItem currentDownloadingAudio;
     private NotificationCompat.Builder mAudioPlayerNoti;
-    private MediaSessionManager mManager;
     private MediaSessionCompat mSession;
     private MediaController mController;
+    private String state;
+    private String CHANNEL_ID;
+    private NotificationCompat.Builder mBuilder1;
+    private NotificationManager mManager;
+    Notification.Builder nb = null;
+    private int downloadProgress = 0;
+    private Runnable r;
+    private Handler progressCounter;
 
 
     public static void intentDownload(Context context, Audio.AudioItem audioItem) {
@@ -167,25 +174,25 @@ MediaPlayer.OnErrorListener,MediaPlayer.OnInfoListener,MediaPlayer.OnSeekComplet
                 .setStatusListener(new DownloadStatusListenerV1() {
                     @Override
                     public void onDownloadComplete(DownloadRequest downloadRequest) {
-                      downloading = false;
-                      downloadRequests.remove(0);
-                      startDownloading();
-                      startTime = 0;
-                      mNotificationManager.cancel(0);
+                        downloading = false;
+                        downloadRequests.remove(0);
+                        startDownloading();
+                        startTime = 0;
+                        PugNotification.with(getApplicationContext()).cancel(1);
+                        getManager().cancelAll();
+                        downloadProgress = 0;
                     }
 
                     @Override
                     public void onDownloadFailed(DownloadRequest downloadRequest, int errorCode, String errorMessage) {
-                        Toasty.normal(getApplicationContext(),"Download Failed").show();
-                        Log.e("progress", String.valueOf(errorMessage));
+                        PugNotification.with(getApplicationContext()).cancel(1);
+                        getManager().cancelAll();
                     }
 
                     @Override
-                    public void onProgress(DownloadRequest downloadRequest, long totalBytes, long downloadedBytes, int progress) {
-                        mBuilder.setProgress(100,progress,false);
-                        mBuilder.setContentTitle(currentDownloadingAudio.getTitle());
-                        mBuilder.setContentText(calculateEllapsedTime(startTime,totalBytes,downloadedBytes));
-                        updateNotification();
+                    public void onProgress(DownloadRequest downloadRequest, final long totalBytes, final long downloadedBytes, final int progress) {
+                        refreshNotification(progress);
+                        downloadProgress = progress;
                     }
                 });
 
@@ -207,10 +214,38 @@ MediaPlayer.OnErrorListener,MediaPlayer.OnInfoListener,MediaPlayer.OnSeekComplet
                 currentDownloadingAudio = getAudio();
                 downloading = true;
                 showNotification();
+                startProgress();
             } else {
+                stopProgress();
                 downloading = false;
             }
         }
+    }
+
+    private void stopProgress() {
+        if(progressCounter!=null) {
+            progressCounter.removeCallbacks(r);
+        }
+    }
+
+    private void startProgress() {
+        r = new Runnable() {
+            @Override
+            public void run() {
+                    try {
+                        progressCounter = new Handler();
+                        progressCounter.postDelayed(this, 1800);
+                        if(downloadProgress>0) {
+                            mBuilder.setProgress(100, downloadProgress, false);
+                            getManager().notify(101, mBuilder.build());
+                        }
+                    }catch (IllegalStateException ignored){
+
+                    }
+            }
+        };
+
+        r.run();
     }
 
     private boolean getFile(String s) {
@@ -219,27 +254,20 @@ MediaPlayer.OnErrorListener,MediaPlayer.OnInfoListener,MediaPlayer.OnSeekComplet
         return f.exists();
     }
 
-    public void updateNotification(){
-        try {
-            mNotificationManager.notify(0, mBuilder.build());
-        }catch (IllegalArgumentException ignored){
-        }
+    public void refreshNotification(int progress){
+        PugNotification.with(getApplicationContext())
+                .load()
+                .identifier(1)
+                .smallIcon(android.R.drawable.stat_sys_download)
+                .progress()
+                .value(progress,100, false)
+                .build();
      }
-
-    public void clearNotification(){
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mNotificationManager.cancel(0);
-            }
-        }, 10);
-    }
 
     private boolean offlined(int aid) {
         File f = new File(Environment.getExternalStorageDirectory()+"/MumineenAudio/"+aid+".mp3");
         return f.exists();
     }
-
 
     private void playPrevious()  {
     }
@@ -332,7 +360,6 @@ MediaPlayer.OnErrorListener,MediaPlayer.OnInfoListener,MediaPlayer.OnSeekComplet
             sendBroadCast(STATE_PAUSED,ACTION_PAUSE);
             showUpdateAudioNotification();
         }
-
     }
 
     private void resumeMedia() {
@@ -367,7 +394,6 @@ MediaPlayer.OnErrorListener,MediaPlayer.OnInfoListener,MediaPlayer.OnSeekComplet
                 playMedia(playingAudio);
             } else {
                 mPlayer.seekTo(0);
-               // playMedia(playingAudio);
             }
         }
     }
@@ -408,8 +434,8 @@ MediaPlayer.OnErrorListener,MediaPlayer.OnInfoListener,MediaPlayer.OnSeekComplet
     public void onPrepared(MediaPlayer mediaPlayer) {
         mPlayer.start();
         sendAudioBroadCast();
-        createAudioNotification();
         showUpdateAudioNotification();
+        Utils.addToRecentList(playingAudio,getApplicationContext());
     }
 
     private void sendNewAudioBroadcast() {
@@ -417,6 +443,7 @@ MediaPlayer.OnErrorListener,MediaPlayer.OnInfoListener,MediaPlayer.OnSeekComplet
         intent.putExtra("state",STATE_BUFFERING);
         intent.putExtra("action",ACTION_AUDIO);
         intent.putExtra("audio",playingAudio);
+        state = ACTION_SEEK_BUFFER;
         LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
 
     }
@@ -426,6 +453,7 @@ MediaPlayer.OnErrorListener,MediaPlayer.OnInfoListener,MediaPlayer.OnSeekComplet
         intent.putExtra("state",STATE_PLAYING);
         intent.putExtra("action",ACTION_PLAY);
         intent.putExtra("duration",mPlayer.getDuration());
+        state = ACTION_PLAY;
         LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
     }
 
@@ -439,6 +467,7 @@ MediaPlayer.OnErrorListener,MediaPlayer.OnInfoListener,MediaPlayer.OnSeekComplet
             Intent intent = new Intent(FILTER_AUDIO_DATA);
             intent.putExtra("action", ACTION_SEEK);
             intent.putExtra("position", currentPosition);
+            intent.putExtra("status", state);
             intent.putExtra("buffer",buffer);
             LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
         }
@@ -446,67 +475,15 @@ MediaPlayer.OnErrorListener,MediaPlayer.OnInfoListener,MediaPlayer.OnSeekComplet
 
     @Override
     public void onCreate() {
-        mNotificationManager = NotificationManagerCompat.from(getApplicationContext());
-        mBuilder = new NotificationCompat.Builder(getApplicationContext());
-        mAudioPlayerNoti = new NotificationCompat.Builder(getApplicationContext());
-
-        Intent cancelIntent = new Intent(getApplicationContext(), AudioPlayer.class);
-        cancelIntent.putExtra("action",ACTION_CANCEL_DOWNLOAD);
-        PendingIntent cancelPendingIntent =
-                PendingIntent.getActivity(
-                        getApplicationContext(),
-                        0,
-                        cancelIntent,
-                        PendingIntent.FLAG_UPDATE_CURRENT
-                );
-
-        mBuilder.addAction(0, "Cancel Download",cancelPendingIntent);
-
-        // Create a new MediaSession
-
-
         db = new AudioDB(getApplicationContext());
         downloadManager = new ThinDownloadManager();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            createChannels();
+        }
         super.onCreate();
     }
 
     public void createAudioNotification() {
-        Bitmap anImage = BitmapFactory.decodeResource(getApplicationContext().getResources(),R.drawable.album_art);
-
-
-        final MediaSessionCompat mediaSession;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-            mediaSession = new MediaSessionCompat(this, "debug tag");
-            mediaSession.setMetadata(new MediaMetadataCompat.Builder()
-                    .putBitmap("art",anImage)
-                    .putString(MediaMetadata.METADATA_KEY_ALBUM, playingAudio.getAlbum())
-                    .putString(MediaMetadata.METADATA_KEY_TITLE, playingAudio.getTitle())
-                    .build());
-            mediaSession.setActive(true);
-            mediaSession.setCallback(new MediaSessionCompat.Callback() {
-
-            });
-
-
-            mediaSession.setFlags(MediaSession.FLAG_HANDLES_TRANSPORT_CONTROLS);
-
-            mAudioPlayerNoti
-                    .setShowWhen(false)
-                    .setStyle(new NotificationCompat.MediaStyle()
-                            .setMediaSession(mediaSession.getSessionToken())
-                            .setShowActionsInCompactView(0, 1, 2))
-                    .setColor(ContextCompat.getColor(getApplicationContext(),R.color.colorPrimary))
-                    .setSmallIcon(R.drawable.notification)
-                    .setContentText(playingAudio.getAlbum())
-                    .setContentInfo(playingAudio.getAlbum())
-                    .setContentTitle(playingAudio.getTitle())
-                    .setLargeIcon(anImage)
-                    .addAction(R.drawable.ic_back, "prev", retreivePlaybackAction(3))
-                    .addAction(playPauseDrawable(), "pause", retreivePlaybackAction(1))
-                    .addAction(R.drawable.ic_next, "next", retreivePlaybackAction(2));
-        }
-
-
     }
 
     private int playPauseDrawable() {
@@ -546,21 +523,36 @@ MediaPlayer.OnErrorListener,MediaPlayer.OnInfoListener,MediaPlayer.OnSeekComplet
         return null;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public void createChannels() {
+        NotificationChannel androidChannel = new NotificationChannel(ANDROID_CHANNEL_ID,
+                ANDROID_CHANNEL_NAME, NotificationManager.IMPORTANCE_DEFAULT);
+        androidChannel.enableLights(true);
+        androidChannel.enableVibration(true);
+        androidChannel.setLightColor(Color.GREEN);
+        androidChannel.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
+        getManager().createNotificationChannel(androidChannel);
+
+    }
+
+    private NotificationManager getManager() {
+        if (mManager == null) {
+            mManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        }
+        return mManager;
+    }
 
     private void sendBroadCast(String state,String action) {
         Intent intent = new Intent(FILTER_AUDIO_DATA);
         intent.putExtra("state",state);
         intent.putExtra("action",action);
+        this.state = state;
+
         LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
     }
 
     private void showUpdateAudioNotification() {
-        mAudioPlayerNoti.mActions.clear();
-        mAudioPlayerNoti
-                .addAction(R.drawable.ic_back, "prev", retreivePlaybackAction(3))
-                .addAction(playPauseDrawable(), "pause", retreivePlaybackAction(1))
-                .addAction(R.drawable.ic_next, "next", retreivePlaybackAction(2));
-        mNotificationManager.notify(2, mAudioPlayerNoti.build());
+
     }
 
     @Override
@@ -569,7 +561,6 @@ MediaPlayer.OnErrorListener,MediaPlayer.OnInfoListener,MediaPlayer.OnSeekComplet
         if (mPlayer != null) {
             stopMedia();
             mPlayer.release();
-            mNotificationManager.cancelAll();
         }
     }
 
@@ -615,16 +606,25 @@ MediaPlayer.OnErrorListener,MediaPlayer.OnInfoListener,MediaPlayer.OnSeekComplet
     }
 
     public void showNotification() {
-        mBuilder.setSmallIcon(android.R.drawable.stat_sys_download)
-                .setContentTitle("Starting Download...")
-                .setShowWhen(false)
-                .setContentText("Please wait..")
-                .setProgress(100, 0, true)
-                .setColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary))
-                .setOngoing(true);
+        PugNotification.with(getApplicationContext())
+                .load()
+                .title(getAudio().getTitle())
+                .identifier(1)
+                .smallIcon(android.R.drawable.stat_sys_download)
+                .progress()
+                .value(0,100, true)
+                .build();
 
-
-        updateNotification();
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            mBuilder = new Notification.Builder(getApplicationContext(), ANDROID_CHANNEL_ID)
+                    .setContentTitle(getAudio().getTitle())
+                    .setSmallIcon(android.R.drawable.stat_sys_download,4)
+                    .setProgress(0,100,true)
+                    .setOnlyAlertOnce(true)
+                    .setColor(ContextCompat.getColor(getApplicationContext(),R.color.colorPrimary))
+                    .setOngoing(true);
+            getManager().notify(101, mBuilder.build());
+        }
     }
 
     public Audio.AudioItem getAudio() {

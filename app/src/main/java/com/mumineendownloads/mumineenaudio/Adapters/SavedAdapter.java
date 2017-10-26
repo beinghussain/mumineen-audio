@@ -26,17 +26,17 @@ import static com.mumineendownloads.mumineenaudio.Helpers.AudioPlayer.STATE_PAUS
 import static com.mumineendownloads.mumineenaudio.Helpers.AudioPlayer.STATE_PLAYING;
 
 
-public class RecentAdapter extends RecyclerView.Adapter<RecentAdapter.AudioViewHolder> {
+public class SavedAdapter extends RecyclerView.Adapter<SavedAdapter.AudioViewHolder> {
 
     private final HomeFrament homeFragment;
-    ArrayList<RecentlyPlayed> albumModels;
+    ArrayList<Audio.AudioItem> albumModels;
     Context context;
     private Audio.AudioItem playingAudio;
     private String currentState = STATE_NULL;
     String type = "playlist";
 
 
-    public RecentAdapter(ArrayList<RecentlyPlayed> albumModels, Context context, HomeFrament homeFrament, String type){
+    public SavedAdapter(ArrayList<Audio.AudioItem> albumModels, Context context, HomeFrament homeFrament, String type){
         this.albumModels = albumModels;
         this.context = context;
         this.homeFragment = homeFrament;
@@ -45,17 +45,17 @@ public class RecentAdapter extends RecyclerView.Adapter<RecentAdapter.AudioViewH
 
 
     @Override
-    public RecentAdapter.AudioViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public SavedAdapter.AudioViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v;
         v = LayoutInflater.from(parent.getContext()).inflate(R.layout.recent, null);
         return new AudioViewHolder(v);
     }
 
     @Override
-    public void onBindViewHolder(final RecentAdapter.AudioViewHolder holder, int position) {
+    public void onBindViewHolder(final SavedAdapter.AudioViewHolder holder, int position) {
         playingAudio = homeFragment.getPlayingAudio();
         currentState = homeFragment.getCurrentState();
-        final Audio.AudioItem singleItem = albumModels.get(position).getAudioItem();
+        final Audio.AudioItem singleItem = albumModels.get(position);
         holder.title.setText(singleItem.getTitle());
 
 

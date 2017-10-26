@@ -4,38 +4,93 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:clickable="true"
-    android:background="#33ffffff"
+    android:background="@drawable/transparent_background"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <RelativeLayout
         android:layout_width="80dp"
-        android:gravity="center"
-        android:paddingTop="16dp"
-        android:paddingBottom="8dp"
         android:layout_height="match_parent">
 
-        <ImageView
-            android:id="@+id/playPauseBtn"
-            android:layout_width="40dp"
-            android:alpha="0.8"
-            android:layout_height="40dp"
-            android:scaleType="fitCenter"
-            android:layout_gravity="center"
-            app:srcCompat="@drawable/play_main"
-            android:tint="@color/textColor"
-            />
 
-        <com.rey.material.widget.ProgressView
-            android:id="@+id/loading"
-            android:layout_width="10dp"
-            android:alpha="0"
-            android:layout_height="10dp"
-            android:visibility="visible"
-            app:pv_autostart="true"
-            android:layout_gravity="center"
-            app:pv_circular="true"
-            app:pv_progressMode="indeterminate"
-            app:pv_progressStyle="@style/CircularProgressWhite"/>
+
+        <RelativeLayout
+            android:layout_centerInParent="true"
+            android:layout_width="wrap_content"
+            android:paddingTop="16dp"
+            android:paddingBottom="8dp"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/playPauseBtn"
+                android:layout_width="40dp"
+                android:alpha="0.8"
+                android:layout_height="40dp"
+                android:scaleType="fitCenter"
+                android:layout_gravity="center"
+                app:srcCompat="@drawable/play_main"
+                android:tint="@color/textColor"
+                />
+
+            <com.rey.material.widget.ProgressView
+                android:id="@+id/loading"
+                android:layout_width="10dp"
+                android:alpha="0"
+                android:layout_height="10dp"
+                android:visibility="visible"
+                app:pv_autostart="true"
+                android:layout_gravity="center"
+                app:pv_circular="true"
+                app:pv_progressMode="indeterminate"
+                app:pv_progressStyle="@style/CircularProgressWhite"/>
+
+
+
+        </RelativeLayout>
+
+
+        <FrameLayout
+            android:layout_width="16dp"
+            android:layout_margin="4dp"
+            android:layout_alignParentEnd="true"
+            android:layout_height="16dp">
+
+
+            <ImageView
+                android:id="@+id/legend"
+                android:visibility="gone"
+                android:tint="@color/colorWhite"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:alpha="0.6"
+                app:srcCompat="@drawable/ic_music_notes"
+                android:layout_gravity="center"
+                android:contentDescription="@string/action_settings" />
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:id="@+id/animation"
+                android:layout_gravity="center"
+                android:visibility="gone"
+                android:alpha="0.6"
+                android:layout_height="match_parent">
+
+                <com.taishi.library.Indicator
+                    android:layout_gravity="center"
+                    android:layout_width="match_parent"
+                    android:layout_height="15dp"
+                    app:bar_num="5"
+                    app:bar_color="#fff"
+                    app:step_num="10"
+                    app:duration="1500"/>
+
+            </RelativeLayout>
+
+        </FrameLayout>
+
+
+
+
 
     </RelativeLayout>
 
@@ -55,8 +110,6 @@
             android:text="Sample title"
             android:textColor="@color/textColor"
             android:textSize="11sp" />
-
-
 
     </RelativeLayout>
 

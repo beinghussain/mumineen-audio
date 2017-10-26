@@ -1,20 +1,16 @@
 package com.mumineendownloads.mumineenaudio.Adapters;
 
 import android.content.Context;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.marcinorlowski.fonty.Fonty;
 import com.mumineendownloads.mumineenaudio.Fragments.HomeFrament;
 import com.mumineendownloads.mumineenaudio.Helpers.Utils;
-import com.mumineendownloads.mumineenaudio.Models.AlbumModel;
 import com.mumineendownloads.mumineenaudio.Models.Audio;
 import com.mumineendownloads.mumineenaudio.R;
 import com.rey.material.widget.ProgressView;
@@ -62,64 +58,59 @@ public class AudioCardAdapter extends RecyclerView.Adapter<AudioCardAdapter.Audi
         currentState = homeFragment.getCurrentState();
         final Audio.AudioItem singleItem = albumModels.get(position);
         holder.title.setText(singleItem.getTitle());
-        if(singleItem.getAid()!=-1) {
-            if (singleItem.getAid() == playingAudio.getAid()) {
-                holder.playPause.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        homeFragment.playPause();
-                    }
-                });
+        if (singleItem.getAid() == playingAudio.getAid()) {
                 switch (currentState) {
                     case STATE_BUFFERING:
                         holder.progressView.setVisibility(View.VISIBLE);
                         holder.playPause.setVisibility(View.GONE);
-                        holder.playPause.setImageResource(R.drawable.play_main);
+                        holder.playPause.setImageResource(R.drawable.play);
                         break;
                     case STATE_PLAYING:
                         holder.progressView.setVisibility(View.GONE);
                         holder.playPause.setVisibility(View.VISIBLE);
-                        holder.playPause.setImageResource(R.drawable.pause_main);
+                        holder.playPause.setImageResource(R.drawable.pause);
                         break;
                     case STATE_PAUSED:
                         holder.progressView.setVisibility(View.GONE);
                         holder.playPause.setVisibility(View.VISIBLE);
-                        holder.playPause.setImageResource(R.drawable.play_main);
+                        holder.playPause.setImageResource(R.drawable.play);
                         break;
                     case STATE_NULL:
                         holder.progressView.setVisibility(View.GONE);
                         holder.playPause.setVisibility(View.VISIBLE);
-                        holder.playPause.setImageResource(R.drawable.play_main);
+                        holder.playPause.setImageResource(R.drawable.play);
                         break;
                     default:
                         holder.progressView.setVisibility(View.GONE);
                         holder.playPause.setVisibility(View.VISIBLE);
-                        holder.playPause.setImageResource(R.drawable.play_main);
+                        holder.playPause.setImageResource(R.drawable.play);
                         break;
                 }
-            } else {
-                holder.playPause.setVisibility(View.VISIBLE);
-                holder.progressView.setVisibility(View.GONE);
-                holder.playPause.setImageResource(R.drawable.play_main);
-                holder.itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        homeFragment.playAudioFile(singleItem);
-                        Utils.addToQueueList(singleItem,context);
-                    }
-                });
-            }
-        }else {
-            holder.progressView.setVisibility(View.GONE);
+        } else {
             holder.playPause.setVisibility(View.VISIBLE);
-            holder.playPause.setImageResource(R.drawable.play_main);
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    homeFragment.playAudioFile(singleItem);
-                    Utils.addToQueueList(singleItem,context);
+            holder.progressView.setVisibility(View.GONE);
+            holder.playPause.setImageResource(R.drawable.play);
+        }
+
+        holder.playPause.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(singleItem.getAid()==playingAudio.getAid()) {
+                    homeFragment.playPause();
+                }else {
+                    homeFragment.playAudioFile(singleItem, "playlist");
                 }
-            });
+            }
+        });
+
+        if(!Utils.isConnected(context)){
+            if(!Utils.downloaded(context,singleItem)){
+                holder.itemView.setAlpha(0.2f);
+            }else {
+                holder.itemView.setAlpha(1f);
+            }
+        } else {
+            holder.itemView.setAlpha(1f);
         }
     }
 
@@ -131,8 +122,8 @@ public class AudioCardAdapter extends RecyclerView.Adapter<AudioCardAdapter.Audi
     class AudioViewHolder extends RecyclerView.ViewHolder {
         public TextView title;
         public TextView size;
-        public ProgressView progressView;
-        public ImageView playPause;
+        ProgressView progressView;
+        ImageView playPause;
         AudioViewHolder (View view) {
             super(view);
             title =  view.findViewById(R.id.title);

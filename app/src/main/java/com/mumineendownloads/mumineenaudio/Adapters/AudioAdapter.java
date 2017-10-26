@@ -62,12 +62,19 @@ public class AudioAdapter extends RecyclerView.Adapter<AudioAdapter.AudioViewHol
         playingAudio = homeFragment.getPlayingAudio();
         currentState = homeFragment.getCurrentState();
 
+        if(offlined(audioItem.getAid())){
+            holder.downloaded.setVisibility(View.VISIBLE);
+        }else {
+            holder.downloaded.setVisibility(View.GONE);
+        }
+
+
         if(Utils.isConnected(context)) {
             holder.itemView.setAlpha(1f);
             holder.mainView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    homeFragment.playAudioFile(audioItem);
+                    homeFragment.playAudioFile(audioItem,"default");
                     currentPosition = position;;
                 }
             });
@@ -75,20 +82,16 @@ public class AudioAdapter extends RecyclerView.Adapter<AudioAdapter.AudioViewHol
         }else {
             if(!offlined(audioItem.getAid())){
                 holder.itemView.setAlpha(0.2f);
-                holder.mainView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-
-                    }
-                });            }else {
+            }else {
                 holder.itemView.setAlpha(1f);
                 holder.mainView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        homeFragment.playAudioFile(audioItem);
+                        homeFragment.playAudioFile(audioItem, "default");
                         currentPosition = position;;
                     }
-                });            }
+                });
+            }
         }
 
 
@@ -104,7 +107,6 @@ public class AudioAdapter extends RecyclerView.Adapter<AudioAdapter.AudioViewHol
 
         if(playingAudio.getAid()!=-1) {
             if (playingAudio.getAid() == audioItem.getAid()) {
-                holder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorWhite));
                 holder.title.setTextColor(ContextCompat.getColor(context,R.color.textColor));
                 holder.nowPlaying.setVisibility(View.VISIBLE);
                 switch (currentState) {
@@ -140,7 +142,6 @@ public class AudioAdapter extends RecyclerView.Adapter<AudioAdapter.AudioViewHol
                         break;
                 }
             } else {
-                holder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorWhite));
                 holder.title.setTextColor(ContextCompat.getColor(context,R.color.textColor));
                 holder.loading.setVisibility(View.GONE);
                 holder.imageView.setVisibility(View.VISIBLE);
@@ -149,7 +150,6 @@ public class AudioAdapter extends RecyclerView.Adapter<AudioAdapter.AudioViewHol
                 holder.nowPlaying.setVisibility(View.GONE);
             }
         } else {
-            holder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorWhite));
             holder.title.setTextColor(ContextCompat.getColor(context,R.color.textColor));
             holder.loading.setVisibility(View.GONE);
             holder.imageView.setVisibility(View.VISIBLE);
@@ -185,6 +185,7 @@ public class AudioAdapter extends RecyclerView.Adapter<AudioAdapter.AudioViewHol
         ProgressView loading;
         ImageButton moreMenu;
         TextView nowPlaying;
+        ImageView downloaded;
         AudioViewHolder (View view) {
             super(view);
             title =  view.findViewById(R.id.title);
@@ -195,6 +196,7 @@ public class AudioAdapter extends RecyclerView.Adapter<AudioAdapter.AudioViewHol
             loading = view.findViewById(R.id.seekbarAudio);
             moreMenu = view.findViewById(R.id.menu_options);
             nowPlaying = view.findViewById(R.id.nowPlaying);
+            downloaded = view.findViewById(R.id.downloaded);
             Fonty.setFonts((ViewGroup) view);
         }
     }

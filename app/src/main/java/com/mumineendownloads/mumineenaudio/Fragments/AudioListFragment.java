@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Environment;
@@ -32,6 +33,7 @@ import com.mumineendownloads.mumineenaudio.Activities.MainActivity;
 import com.mumineendownloads.mumineenaudio.Adapters.AudioAdapter;
 import com.mumineendownloads.mumineenaudio.Helpers.AudioDB;
 import com.mumineendownloads.mumineenaudio.Helpers.AudioPlayer;
+import com.mumineendownloads.mumineenaudio.Helpers.Utils;
 import com.mumineendownloads.mumineenaudio.Models.Audio;
 import com.mumineendownloads.mumineenaudio.R;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
@@ -44,11 +46,11 @@ import java.util.Collections;
 import java.util.Comparator;
 
 import es.dmoral.toasty.Toasty;
-
 import static com.mumineendownloads.mumineenaudio.Helpers.AudioPlayer.ACTION_AUDIO;
 import static com.mumineendownloads.mumineenaudio.Helpers.AudioPlayer.ACTION_PAUSE;
 import static com.mumineendownloads.mumineenaudio.Helpers.AudioPlayer.ACTION_PLAY;
 import static com.mumineendownloads.mumineenaudio.Helpers.AudioPlayer.ACTION_RESUME;
+import static com.mumineendownloads.mumineenaudio.Helpers.AudioPlayer.ACTION_SEEK;
 import static com.mumineendownloads.mumineenaudio.Helpers.AudioPlayer.ACTION_STOP;
 import static com.mumineendownloads.mumineenaudio.Helpers.AudioPlayer.STATE_BUFFERING;
 import static com.mumineendownloads.mumineenaudio.Helpers.AudioPlayer.STATE_NULL;
@@ -56,7 +58,7 @@ import static com.mumineendownloads.mumineenaudio.Helpers.AudioPlayer.STATE_PAUS
 import static com.mumineendownloads.mumineenaudio.Helpers.AudioPlayer.STATE_PLAYING;
 
 public class AudioListFragment extends Fragment {
-    public RecyclerView recyclerView;
+    public static RecyclerView recyclerView;
     private DownloadReceiver mReceiver;
     private Audio.AudioItem playingAudio;
     private String currentState;
@@ -65,6 +67,7 @@ public class AudioListFragment extends Fragment {
     private int position;
     private String album;
     FrameLayout.LayoutParams params;
+    boolean paramsSet = false;
 
 
     public AudioListFragment() {
@@ -80,6 +83,7 @@ public class AudioListFragment extends Fragment {
         super.onCreate(savedInstanceState);
         position = 0;
         Bundle bundle = this.getArguments();
+
 
         if(bundle != null){
             album = bundle.getString("album");
@@ -97,12 +101,30 @@ public class AudioListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_audio_list, container, false);
-        Fonty.setFonts((ViewGroup) rootView);
+        Fonty.setFonts(getActivity());
         recyclerView = rootView.findViewById(R.id.recyclerView);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.getItemAnimator().setChangeDuration(0);
         AudioDB db = new AudioDB(getContext());
+
+        int pix = Utils.dpToPx(getContext());
+        if(MainActivity.slidingPaneLayout.getPanelState()!= SlidingUpPanelLayout.PanelState.HIDDEN){
+            params = new FrameLayout.LayoutParams(
+                    FrameLayout.LayoutParams.WRAP_CONTENT,
+                    FrameLayout.LayoutParams.WRAP_CONTENT
+            );
+            params.setMargins(0,0,0,pix);
+            recyclerView.setLayoutParams(params);
+        }else {
+            params = new FrameLayout.LayoutParams(
+                    FrameLayout.LayoutParams.WRAP_CONTENT,
+                    FrameLayout.LayoutParams.WRAP_CONTENT
+            );
+            params.setMargins(0,0,0,0);
+            recyclerView.setLayoutParams(params);
+        }
+
 
 
         audioItems = db.getAllPDFS(album);
@@ -115,11 +137,18 @@ public class AudioListFragment extends Fragment {
         audioAdapter = new AudioAdapter(audioItems,getContext(),AudioListFragment.this);
         recyclerView.setAdapter(audioAdapter);
 
+        if(MainActivity.getPlayingAudio().getAid()!=-1){
+            playingAudio = MainActivity.getPlayingAudio();
+            currentState = MainActivity.getCurrentState();
+            audioAdapter.notifyDataSetChanged();
+        }
+
         return rootView;
     }
 
 
-    public void playAudioFile(Audio.AudioItem audioItem) {
+    public void playAudioFile(Audio.AudioItem audioItem, String aDefault) {
+        Utils.savePlayingFrom(aDefault,getContext() );
         if(playingAudio!=null) {
             if (audioItem.getAid() == playingAudio.getAid()) {
                 MainActivity.slidingPaneLayout.setPanelState(SlidingUpPanelLayout.PanelState.EXPANDED);
@@ -155,19 +184,53 @@ public class AudioListFragment extends Fragment {
         dialog.setContentView(R.layout.dialog_list);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
 
+        Fonty.setFonts((ViewGroup) dialog.getWindow().getDecorView());
+
+
         TextView download = dialog.findViewById(R.id.download);
         TextView add_to_playlist = dialog.findViewById(R.id.add_to_playlist);
         TextView share = dialog.findViewById(R.id.share);
 
+
         RelativeLayout downloadC =  dialog.findViewById(R.id.download_c);
-        RelativeLayout add_to_downloadC =  dialog.findViewById(R.id.add_to_playlist_c);
+        RelativeLayout add_to_playlistC =  dialog.findViewById(R.id.add_to_playlist_c);
         RelativeLayout shareC =  dialog.findViewById(R.id.share_c);
 
+
+        downloadC.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AudioPlayer.intentSave(getContext(),audioItem);
+                dialog.cancel();
+            }
+        });
+
+
+        add_to_playlistC.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Utils.addToPlaylist(getContext(),audioItem);
+                dialog.cancel();
+            }
+        });
+
+        shareC.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.cancel();
+            }
+        });
 
         if(offlined(audioItem.getAid())){
             downloadC.setVisibility(View.GONE);
         }else {
             downloadC.setVisibility(View.VISIBLE);
+        }
+
+        if(Utils.itemExistinPlaylist(getContext(),audioItem)){
+            add_to_playlistC.setVisibility(View.GONE);
+        }else {
+            add_to_playlistC.setVisibility(View.VISIBLE);
         }
 
         dialog.show();
@@ -195,6 +258,7 @@ public class AudioListFragment extends Fragment {
                 String state = intent.getStringExtra("state");
                 String action = intent.getStringExtra("action");
                 int position1 = getIndexOf(playingAudio);
+                int pix = Utils.dpToPx(getContext());
                 switch (action) {
                     case ACTION_AUDIO:
                         playingAudio = (Audio.AudioItem) intent.getSerializableExtra("audio");
@@ -209,7 +273,7 @@ public class AudioListFragment extends Fragment {
                     case ACTION_PLAY:
                         currentState = STATE_PLAYING;
                         audioAdapter.notifyItemChanged(position1);
-                        params.setMargins(0, 0, 0, 180);
+                        params.setMargins(0, 0, 0, pix);
                         break;
                     case ACTION_PAUSE:
                         currentState = STATE_PAUSED;
@@ -220,7 +284,9 @@ public class AudioListFragment extends Fragment {
                         audioAdapter.notifyItemChanged(position1);
                         params.setMargins(0, 0, 0, 0);
                         recyclerView.setLayoutParams(params);
+                        paramsSet = true;
                         break;
+                    case ACTION_SEEK:
                 }
             }
         }
